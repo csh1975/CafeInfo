@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Stars, CafePlaceholder, Toast } from "@/components/ui/bits";
@@ -37,6 +37,8 @@ function CafeListInner() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(toast);
+  const [picking, setPicking] = useState(false);
+  const lastPickRef = useRef<string | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedQ(q.trim()), 300);
@@ -92,12 +94,24 @@ function CafeListInner() {
     return () => clearTimeout(t);
   }, [toastMsg]);
 
-  const pickRandom = () => {
-    if (cafes.length === 0) return;
-    const pick = cafes[Math.floor(Math.random() * cafes.length)];
-    setQ(pick.name);
-    setDebouncedQ(pick.name.trim());
-  };
+  const pickRandom = useCallback(async () => {
+    if (picking) return;
+    setPicking(true);
+    try {
+      const params = new URLSearchParams({ sort });
+      const res = await fetch(`/api/cafes?${params.toString()}`);
+      const json = await res.json().catch(() => null);
+      const list: Cafe[] = Array.isArray(json?.cafes) ? json.cafes : cafes;
+      if (list.length === 0) return;
+      const pool = list.length > 1 ? list.filter((c) => c.id !== lastPickRef.current) : list;
+      const pick = pool[Math.floor(Math.random() * pool.length)];
+      lastPickRef.current = pick.id;
+      setQ(pick.name);
+      setDebouncedQ(pick.name.trim());
+    } finally {
+      setPicking(false);
+    }
+  }, [sort, cafes, picking]);
 
   return (
     <div className="mt-6">
@@ -115,8 +129,8 @@ function CafeListInner() {
         />
         <button
           type="button"
-          onClick={pickRandom}
-          disabled={cafes.length === 0}
+            onClick={pickRandom}
+          disabled={cafes.length === 0 || picking}
           title="등록된 카페 중 랜덤으로 골라 검색합니다"
           className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-coffee-500/20 bg-white px-5 py-2.5 text-sm font-bold text-coffee-700 transition perspective-400 hover:-translate-y-0.5 hover:border-point/50 hover:bg-cream-100 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none"
         >
