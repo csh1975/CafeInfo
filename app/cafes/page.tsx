@@ -50,8 +50,13 @@ function CafeListInner() {
       const params = new URLSearchParams({ sort });
       if (debouncedQ) params.set("q", debouncedQ);
       const res = await fetch(`/api/cafes?${params.toString()}`);
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "목록을 불러오지 못했습니다.");
+      const contentType = res.headers.get("content-type") ?? "";
+      let json: { cafes?: Cafe[]; error?: string } | null = null;
+      if (contentType.includes("application/json")) {
+        json = (await res.json().catch(() => null)) as { cafes?: Cafe[]; error?: string } | null;
+      }
+      if (!res.ok) throw new Error(json?.error ?? `목록을 불러오지 못했습니다. (상태 ${res.status})`);
+      if (!json || !Array.isArray(json.cafes)) throw new Error("목록을 불러오지 못했습니다.");
       setCafes(json.cafes);
     } catch (e) {
       setError(e instanceof Error ? e.message : "목록을 불러오지 못했습니다.");
