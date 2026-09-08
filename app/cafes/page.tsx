@@ -92,6 +92,13 @@ function CafeListInner() {
     return () => clearTimeout(t);
   }, [toastMsg]);
 
+  const pickRandom = () => {
+    if (cafes.length === 0) return;
+    const pick = cafes[Math.floor(Math.random() * cafes.length)];
+    setQ(pick.name);
+    setDebouncedQ(pick.name.trim());
+  };
+
   return (
     <div className="mt-6">
       <div className="flex flex-wrap items-center gap-2">
@@ -106,6 +113,22 @@ function CafeListInner() {
           className="input min-w-[140px] flex-1 sm:max-w-xs"
           aria-label="카페 검색"
         />
+        <button
+          type="button"
+          onClick={pickRandom}
+          disabled={cafes.length === 0}
+          title="등록된 카페 중 랜덤으로 골라 검색합니다"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-coffee-500/20 bg-white px-4 py-2 text-xs font-bold text-coffee-700 transition hover:bg-cream-100 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <rect x="1.5" y="1.5" width="13" height="13" rx="3" stroke="currentColor" strokeWidth="1.6" />
+            <circle cx="5.5" cy="5.5" r="1.3" fill="currentColor" />
+            <circle cx="10.5" cy="5.5" r="1.3" fill="currentColor" />
+            <circle cx="5.5" cy="10.5" r="1.3" fill="currentColor" />
+            <circle cx="10.5" cy="10.5" r="1.3" fill="currentColor" />
+          </svg>
+          오늘 어디갈까?(랜덤)
+        </button>
         <select value={sort} onChange={(e) => setSort(e.target.value as "rating" | "latest" | "distance")} className="input w-auto" aria-label="정렬">
           <option value="rating">추천도 높은 순</option>
           <option value="distance">이동거리 단거리순</option>
