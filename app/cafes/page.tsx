@@ -178,25 +178,31 @@ function CafeListInner() {
           ) : (
             <div className="card mt-4 overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[560px] text-sm">
+                <table className="w-full min-w-[720px] text-sm">
                   <thead>
                     <tr className="border-b border-coffee-500/10 bg-cream-50 text-xs text-coffee-700">
-                      <th scope="col" className="w-16 px-4 py-3 text-center font-bold">순번</th>
-                      <th scope="col" className="px-4 py-3 text-left font-bold">카페명</th>
-                      <th scope="col" className="w-32 px-4 py-3 text-center font-bold">소요시간</th>
-                      <th scope="col" className="w-36 px-4 py-3 text-center font-bold">별점</th>
+                      <th scope="col" className="w-12 px-4 py-3 text-center font-bold">순번</th>
+                      <th scope="col" className="w-36 px-4 py-3 text-left font-bold">카페명</th>
+                      <th scope="col" className="w-28 px-4 py-3 text-center font-bold">소요시간</th>
+                      <th scope="col" className="px-4 py-3 text-left font-bold">추천 이유</th>
+                      <th scope="col" className="w-32 px-4 py-3 text-center font-bold">별점</th>
                     </tr>
                   </thead>
                   <tbody>
                     {cafes.map((c, i) => (
                       <tr key={c.id} className="border-b border-coffee-500/10 last:border-0 transition hover:bg-cream-50">
                         <td className="px-4 py-3 text-center font-semibold text-stone-500">{i + 1}</td>
-                        <td className="px-4 py-3">
-                          <Link href={`/cafes/${c.id}`} className="font-bold text-coffee-900 hover:text-point hover:underline">
+                        <td className="max-w-36 px-4 py-3">
+                          <Link href={`/cafes/${c.id}`} className="block truncate font-bold text-coffee-900 hover:text-point hover:underline" title={c.name}>
                             {c.name}
                           </Link>
                         </td>
-                        <td className="px-4 py-3 text-center font-semibold text-point">🚗 {c.travelTime}분</td>
+                        <td className="whitespace-nowrap px-4 py-3 text-center font-semibold text-point">🚗 {c.travelTime}분</td>
+                        <td className="max-w-xs px-4 py-3">
+                          <span className="block truncate text-sm text-stone-500" title={c.description ?? ""}>
+                            {c.description?.trim() ? c.description : "-"}
+                          </span>
+                        </td>
                         <td className="px-4 py-3 text-center"><Stars value={c.rating} size="sm" /></td>
                       </tr>
                     ))}
