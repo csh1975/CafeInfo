@@ -76,6 +76,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: message }, { status: 400 });
     }
 
+    const duplicate = await prisma.cafe.findFirst({
+      where: { name: parsed.data.name },
+      select: { id: true },
+    });
+    if (duplicate) {
+      return NextResponse.json(
+        { error: "이미 등록된 카페명입니다. 다른 이름을 입력해주세요.", field: "name" },
+        { status: 409 }
+      );
+    }
+
     let image: Uint8Array<ArrayBuffer> | undefined;
     let imageType: string | undefined;
     const file = form.get("image");

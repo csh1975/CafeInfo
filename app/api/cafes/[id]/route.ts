@@ -57,6 +57,17 @@ export async function PUT(req: NextRequest, { params }: Params) {
       return NextResponse.json({ error: message }, { status: 400 });
     }
 
+    const duplicate = await prisma.cafe.findFirst({
+      where: { name: parsed.data.name, id: { not: params.id } },
+      select: { id: true },
+    });
+    if (duplicate) {
+      return NextResponse.json(
+        { error: "이미 등록된 카페명입니다. 다른 이름을 입력해주세요.", field: "name" },
+        { status: 409 }
+      );
+    }
+
     const data: Record<string, unknown> = { ...parsed.data };
     const file = form.get("image");
     if (file instanceof File && file.size > 0) {
