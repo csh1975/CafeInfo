@@ -1,0 +1,42 @@
+// Prisma 스키마 — 로컬 SQLite / 프로덕션 Turso(libSQL) 호환
+// 로컬: DATABASE_URL="file:./dev.db"
+// 프로덕션: DATABASE_URL="libsql://..." + DATABASE_AUTH_TOKEN
+// ※ provider는 sqlite로 유지 (Turso는 SQLite 호환 프로토콜)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Cafe {
+  id          String   @id @default(cuid())
+  name        String
+  address     String
+  travelTime  Int
+  rating      Int
+  image       Bytes?
+  imageType   String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  comments    Comment[]
+
+  @@index([rating])
+  @@index([createdAt])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  cafeId    String
+  cafe      Cafe     @relation(fields: [cafeId], references: [id], onDelete: Cascade)
+  nickname  String   @default("익명")
+  content   String
+  password  String
+  createdAt DateTime @default(now())
+
+  @@index([cafeId, createdAt])
+}

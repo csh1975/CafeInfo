@@ -1,0 +1,25 @@
+# 의존성
+node_modules/
+.next/
+out/
+
+# Prisma / DB
+prisma/dev.db*
+*.db
+*.db-journal
+
+# 환경변수
+.env
+.env*.local
+!.env.example
+
+# Vercel
+.vercel/
+
+# 기타
+*.tsbuildinfo
+next-env.d.ts
+
+# 에이전트 작업 산출물
+.playwright-mcp/
+.omo/
