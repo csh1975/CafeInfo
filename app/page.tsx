@@ -27,7 +27,7 @@ export default function Home() {
             <h1 className="font-serif text-3xl font-bold leading-tight text-coffee-900 md:text-5xl">
               오늘의 카페,
               <br />
-              한 잔의 여유를 기록하세요
+              한 잔의 여유로 추억을 기록하세요!
             </h1>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-coffee-700/80 md:text-base">
               다녀온 근처 카페를 게시판에 남기고, 별점과 소요시간으로 다음 카페를 골라보세요.
