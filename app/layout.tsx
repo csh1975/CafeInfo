@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
+import SeasonTheme from "@/components/season/SeasonTheme";
 
 export const metadata: Metadata = {
   title: "카페로그 — 대전교육연수원 근처 카페 안내 게시판",
@@ -12,6 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       <body className="font-sans min-h-screen">
+        <SeasonTheme />
         <header className="sticky top-0 z-10 border-b border-coffee-500/10 bg-cream-50/90 backdrop-blur">
           <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
             <Link href="/" className="font-serif text-xl font-bold text-coffee-700">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SeasonalArt from "@/components/season/SeasonalArt";
 
 const FEATURES = [
   { icon: "📝", title: "간편 등록", desc: "카페명·주소·소요시간·별점만 입력하면 끝. 사진은 1장으로 가볍게." },
@@ -10,7 +11,7 @@ export default function Home() {
   return (
     <div>
       {/* 히어로 — SVG 일러스트 + 그라디언트 조합 (외부 스톡 URL 미사용) */}
-      <section className="relative mt-6 overflow-hidden rounded-3xl bg-gradient-to-br from-cream-100 via-[#F3E3CE] to-[#E4CDA8] shadow-card">
+      <section className="season-hero relative mt-6 overflow-hidden rounded-3xl shadow-card">
         <div className="grid items-center gap-6 p-8 md:grid-cols-2 md:p-12">
           <div>
             <p className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-point-light px-4 py-1.5 text-sm font-bold text-point-dark md:text-[15px]">
@@ -41,23 +42,7 @@ export default function Home() {
             </div>
           </div>
           <div className="relative mx-auto w-full max-w-sm" aria-hidden>
-            <svg viewBox="0 0 320 240" className="w-full drop-shadow-xl" role="img">
-              <ellipse cx="160" cy="212" rx="110" ry="14" fill="#8B5E3C" opacity="0.15" />
-              <rect x="70" y="30" width="180" height="150" rx="18" fill="#FFFDF8" stroke="#EADDC6" strokeWidth="3" />
-              <rect x="70" y="30" width="180" height="34" rx="18" fill="#2F5D50" />
-              <circle cx="92" cy="47" r="4" fill="#FBF7F0" />
-              <circle cx="104" cy="47" r="4" fill="#FBF7F0" opacity="0.6" />
-              <path d="M120 100 h60 a22 22 0 0 1 0 44 h-60 z" fill="none" stroke="#8B5E3C" strokeWidth="8" strokeLinecap="round" />
-              <path d="M96 92 h84 v52 a26 26 0 0 1 -26 26 h-32 a26 26 0 0 1 -26 -26 z" fill="#F5EDDF" stroke="#8B5E3C" strokeWidth="6" />
-              <path d="M104 92 q6 -14 12 0 q6 14 12 0 q6 -14 12 0" stroke="#C96F4A" strokeWidth="4" fill="none" strokeLinecap="round" opacity="0.7" />
-              <ellipse cx="250" cy="120" rx="26" ry="34" fill="#6F4A2F" />
-              <ellipse cx="250" cy="108" rx="16" ry="20" fill="#A67C52" />
-              <g fill="#2F5D50" opacity="0.85">
-                <ellipse cx="52" cy="150" rx="14" ry="8" transform="rotate(-30 52 150)" />
-                <ellipse cx="278" cy="70" rx="14" ry="8" transform="rotate(30 278 70)" />
-              </g>
-              <text x="160" y="205" textAnchor="middle" fontSize="13" fill="#8B5E3C" fontFamily="Georgia, serif">오늘의 한 잔 ☕</text>
-            </svg>
+            <SeasonalArt />
             <p className="mt-1 text-right text-xs font-semibold" style={{ color: "#2563EB" }}>- Vibe Programming By 조성하</p>
           </div>
         </div>
