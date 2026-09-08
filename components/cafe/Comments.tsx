@@ -31,7 +31,7 @@ export default function Comments({ cafeId }: { cafeId: string }) {
     try {
       const res = await fetch(`/api/cafes/${cafeId}/comments`);
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "댓글을 불러오지 못했습니다.");
+      if (!res.ok) throw new Error(json.error ?? "리뷰를 불러오지 못했습니다.");
       setComments(json.comments);
     } catch {
       setComments([]);
@@ -56,13 +56,13 @@ export default function Comments({ cafeId }: { cafeId: string }) {
         body: JSON.stringify({ nickname, content, password }),
       });
       const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json.error ?? "댓글 작성에 실패했습니다.");
+      if (!res.ok) throw new Error(json.error ?? "리뷰 작성에 실패했습니다.");
       setComments((prev) => [...prev, json.comment]);
       setNickname("");
       setContent("");
       setPassword("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "댓글 작성에 실패했습니다.");
+      setError(err instanceof Error ? err.message : "리뷰 작성에 실패했습니다.");
     } finally {
       setBusy(false);
     }
@@ -79,26 +79,26 @@ export default function Comments({ cafeId }: { cafeId: string }) {
         body: JSON.stringify({ password: deletePassword }),
       });
       const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json.error ?? "댓글 삭제에 실패했습니다.");
+      if (!res.ok) throw new Error(json.error ?? "리뷰 삭제에 실패했습니다.");
       setComments((prev) => prev.filter((c) => c.id !== id));
       setDeletingId(null);
       setDeletePassword("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "댓글 삭제에 실패했습니다.");
+      setError(err instanceof Error ? err.message : "리뷰 삭제에 실패했습니다.");
     } finally {
       setDeleteBusy(false);
     }
   }
 
   return (
-    <section aria-label="댓글" className="card mt-6 p-6 md:p-8">
-      <h2 className="font-serif text-lg font-bold text-coffee-900">댓글 {comments.length}개</h2>
+    <section aria-label="리뷰" className="card mt-6 p-6 md:p-8">
+      <h2 className="font-serif text-lg font-bold text-coffee-900">리뷰 {comments.length}개</h2>
 
       {loading ? (
-        <p className="mt-4 text-sm text-stone-500">댓글을 불러오는 중입니다…</p>
+        <p className="mt-4 text-sm text-stone-500">리뷰를 불러오는 중입니다…</p>
       ) : comments.length === 0 ? (
         <p className="mt-4 rounded-xl bg-cream-50 px-4 py-6 text-center text-sm text-stone-500">
-          아직 댓글이 없습니다. 첫 댓글을 남겨보세요.
+          아직 리뷰가 없습니다. 첫 리뷰를 남겨보세요.
         </p>
       ) : (
         <ul className="mt-4 divide-y divide-coffee-500/10">
@@ -169,15 +169,15 @@ export default function Comments({ cafeId }: { cafeId: string }) {
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="따뜻한 댓글을 남겨주세요. (최대 500자)"
+          placeholder="따뜻한 리뷰를 남겨주세요. (최대 500자)"
           rows={3}
           maxLength={500}
           className="input resize-none"
-          aria-label="댓글 내용"
+          aria-label="리뷰 내용"
         />
         <div className="flex justify-end">
           <button type="submit" disabled={busy} className="btn-primary !px-5 !py-2 text-xs">
-            {busy ? "등록 중…" : "댓글 등록"}
+            {busy ? "등록 중…" : "리뷰 등록"}
           </button>
         </div>
       </form>

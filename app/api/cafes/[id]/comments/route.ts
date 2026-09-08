@@ -5,7 +5,7 @@ import { hashPassword } from "@/lib/password";
 
 type Params = { params: { id: string } };
 
-// GET /api/cafes/[id]/comments — 댓글 목록 (오래된 순)
+// GET /api/cafes/[id]/comments — 리뷰 목록 (오래된 순)
 export async function GET(_req: NextRequest, { params }: Params) {
   try {
     const cafe = await prisma.cafe.findUnique({ where: { id: params.id }, select: { id: true } });
@@ -22,11 +22,11 @@ export async function GET(_req: NextRequest, { params }: Params) {
     });
   } catch (e) {
     console.error(`GET /api/cafes/${params.id}/comments failed:`, e);
-    return NextResponse.json({ error: "댓글을 불러오지 못했습니다." }, { status: 500 });
+    return NextResponse.json({ error: "리뷰를 불러오지 못했습니다." }, { status: 500 });
   }
 }
 
-// POST /api/cafes/[id]/comments — 익명 댓글 작성
+// POST /api/cafes/[id]/comments — 익명 리뷰 작성
 export async function POST(req: NextRequest, { params }: Params) {
   try {
     const cafe = await prisma.cafe.findUnique({ where: { id: params.id }, select: { id: true } });
@@ -55,6 +55,6 @@ export async function POST(req: NextRequest, { params }: Params) {
     );
   } catch (e) {
     console.error(`POST /api/cafes/${params.id}/comments failed:`, e);
-    return NextResponse.json({ error: "댓글 작성 중 오류가 발생했습니다." }, { status: 500 });
+    return NextResponse.json({ error: "리뷰 작성 중 오류가 발생했습니다." }, { status: 500 });
   }
 }

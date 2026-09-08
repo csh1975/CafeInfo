@@ -37,10 +37,10 @@ export const commentCreateSchema = z.object({
     .optional()
     .transform((v) => (v === "" ? undefined : v)),
   content: z
-    .string({ required_error: "댓글 내용을 입력해주세요." })
+    .string({ required_error: "리뷰 내용을 입력해주세요." })
     .trim()
-    .min(1, "댓글 내용을 입력해주세요.")
-    .max(500, "댓글은 500자 이내로 입력해주세요."),
+    .min(1, "리뷰 내용을 입력해주세요.")
+    .max(500, "리뷰는 500자 이내로 입력해주세요."),
   password: z
     .string({ required_error: "비밀번호를 입력해주세요." })
     .min(4, "비밀번호는 4자 이상이어야 합니다.")

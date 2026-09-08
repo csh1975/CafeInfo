@@ -18,7 +18,7 @@ export async function DELETE(req: NextRequest, { params }: Params) {
       where: { id: params.commentId, cafeId: params.id },
       select: { id: true, password: true },
     });
-    if (!comment) return NextResponse.json({ error: "댓글을 찾을 수 없습니다." }, { status: 404 });
+    if (!comment) return NextResponse.json({ error: "리뷰를 찾을 수 없습니다." }, { status: 404 });
     if (comment.password !== hashPassword(parsed.data.password)) {
       return NextResponse.json({ error: "비밀번호가 일치하지 않습니다." }, { status: 403 });
     }
@@ -27,6 +27,6 @@ export async function DELETE(req: NextRequest, { params }: Params) {
     return NextResponse.json({ ok: true });
   } catch (e) {
     console.error(`DELETE /api/cafes/${params.id}/comments/${params.commentId} failed:`, e);
-    return NextResponse.json({ error: "댓글 삭제 중 오류가 발생했습니다." }, { status: 500 });
+    return NextResponse.json({ error: "리뷰 삭제 중 오류가 발생했습니다." }, { status: 500 });
   }
 }
