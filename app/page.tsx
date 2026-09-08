@@ -13,7 +13,14 @@ export default function Home() {
       <section className="relative mt-6 overflow-hidden rounded-3xl bg-gradient-to-br from-cream-100 via-[#F3E3CE] to-[#E4CDA8] shadow-card">
         <div className="grid items-center gap-6 p-8 md:grid-cols-2 md:p-12">
           <div>
-            <p className="mb-3 inline-block rounded-full bg-point-light px-3 py-1 text-xs font-bold text-point-dark">
+            <p className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-point-light px-4 py-1.5 text-sm font-bold text-point-dark md:text-[15px]">
+              <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <rect x="3" y="4" width="14" height="13" rx="2.5" fill="#2F5D50" />
+                <rect x="3" y="4" width="14" height="4" rx="2" fill="#3E7A68" />
+                <rect x="6.5" y="2.5" width="7" height="3" rx="1.5" fill="#C96F4A" />
+                <line x1="6.5" x2="13.5" y1="11" y2="11" stroke="#FBF7F0" strokeWidth="1.6" strokeLinecap="round" />
+                <line x1="6.5" x2="11.5" y1="13.8" y2="13.8" stroke="#FBF7F0" strokeWidth="1.6" strokeLinecap="round" opacity="0.7" />
+              </svg>
               대전교육연수원 근처 카페 안내 게시판
             </p>
             <h1 className="font-serif text-3xl font-bold leading-tight text-coffee-900 md:text-5xl">
