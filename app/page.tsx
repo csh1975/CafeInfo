@@ -57,8 +57,8 @@ export default function Home() {
                 <ellipse cx="278" cy="70" rx="14" ry="8" transform="rotate(30 278 70)" />
               </g>
               <text x="160" y="205" textAnchor="middle" fontSize="13" fill="#8B5E3C" fontFamily="Georgia, serif">오늘의 한 잔 ☕</text>
-              <text x="312" y="232" textAnchor="end" fontSize="11" fill="#2563EB" fontFamily="Georgia, serif">- Vibe Programming By 조성하</text>
             </svg>
+            <p className="mt-1 text-right text-xs font-semibold" style={{ color: "#2563EB" }}>- Vibe Programming By 조성하</p>
           </div>
         </div>
       </section>
