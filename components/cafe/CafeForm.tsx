@@ -39,12 +39,17 @@ export default function CafeForm({
   const [removeImage, setRemoveImage] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [duplicateMessage, setDuplicateMessage] = useState<string | null>(null);
+  const [checkingName, setCheckingName] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const {
     register,
     handleSubmit,
     setValue,
+    setError: setFieldError,
+    clearErrors,
+    setFocus,
     watch,
     formState: { errors },
   } = useForm<CafeFormValues>({
@@ -81,10 +86,54 @@ export default function CafeForm({
     }
   }
 
+  async function checkDuplicateName(name: string): Promise<boolean> {
+    const trimmed = name.trim();
+    if (!trimmed) return false;
+    if (mode === "edit" && trimmed === (defaultValues?.name ?? "").trim()) return false;
+    const params = new URLSearchParams({ name: trimmed });
+    if (mode === "edit" && cafeId) params.set("excludeId", cafeId);
+    const res = await fetch(`/api/cafes/check?${params.toString()}`);
+    const json = await res.json().catch(() => ({}));
+    return res.ok && json.exists === true;
+  }
+
+  async function handleNameBlur(e: React.FocusEvent<HTMLInputElement>) {
+    const value = e.target.value.trim();
+    clearErrors("name");
+    if (!value) {
+      setDuplicateMessage(null);
+      return;
+    }
+    setCheckingName(true);
+    try {
+      const exists = await checkDuplicateName(value);
+      if (exists) {
+        const message = "이미 등록된 카페명입니다. 다른 이름을 입력해주세요.";
+        setDuplicateMessage(message);
+        setFieldError("name", { type: "duplicate", message });
+      } else {
+        setDuplicateMessage(null);
+      }
+    } catch {
+      setDuplicateMessage(null);
+    } finally {
+      setCheckingName(false);
+    }
+  }
+
   async function onSubmit(values: CafeFormValues) {
     setBusy(true);
     setError(null);
     try {
+      const isDuplicate = await checkDuplicateName(values.name);
+      if (isDuplicate) {
+        const message = "이미 등록된 카페명입니다. 다른 이름을 입력해주세요.";
+        setDuplicateMessage(message);
+        setFieldError("name", { type: "duplicate", message });
+        setFocus("name");
+        setError(message);
+        return;
+      }
       const form = new FormData();
       form.set("name", values.name);
       form.set("address", values.address);
@@ -97,7 +146,15 @@ export default function CafeForm({
       const url = mode === "create" ? "/api/cafes" : `/api/cafes/${cafeId}`;
       const res = await fetch(url, { method: mode === "create" ? "POST" : "PUT", body: form });
       const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json.error ?? "저장에 실패했습니다.");
+      if (!res.ok) {
+        if (res.status === 409 || json.field === "name") {
+          const message = json.error ?? "이미 등록된 카페명입니다. 다른 이름을 입력해주세요.";
+          setDuplicateMessage(message);
+          setFieldError("name", { type: "duplicate", message });
+          setFocus("name");
+        }
+        throw new Error(json.error ?? "저장에 실패했습니다.");
+      }
 
       const toast = mode === "create" ? "카페가 등록되었습니다." : "카페가 수정되었습니다.";
       router.push(`/cafes?toast=${encodeURIComponent(toast)}`);
@@ -115,8 +172,21 @@ export default function CafeForm({
 
       <div>
         <label className="label" htmlFor="name">카페명 *</label>
-        <input id="name" className="input" placeholder="예: 슬로우커피 하우스" {...register("name")} />
-        {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name.message}</p>}
+        <input
+          id="name"
+          className="input"
+          placeholder="예: 슬로우커피 하우스"
+          {...register("name", {
+            onBlur: handleNameBlur,
+            onChange: () => {
+              if (duplicateMessage) setDuplicateMessage(null);
+            },
+          })}
+        />
+        {checkingName && <p className="mt-1 text-xs text-stone-500">중복 확인 중...</p>}
+        {(duplicateMessage || errors.name) && (
+          <p className="mt-1 text-xs text-red-600">{duplicateMessage ?? errors.name?.message}</p>
+        )}
       </div>
 
       <div>
