@@ -57,8 +57,64 @@ body {
   }
 }
 
+.season-hero {
+  background: var(--season-hero, linear-gradient(135deg, #faf3e7 0%, #f3e3ce 55%, #e4cda8 100%));
+}
+
+body[data-season="spring"] {
+  --bg: #fdf8f3;
+  --season-hero: linear-gradient(135deg, #fdeef3 0%, #f8dce6 55%, #f3c6d4 100%);
+  --season-accent: #d16a8b;
+}
+body[data-season="summer"] {
+  --bg: #f4fafc;
+  --season-hero: linear-gradient(135deg, #e3f2f9 0%, #c9e7f5 55%, #a9d6ec 100%);
+  --season-accent: #1e7fa8;
+}
+body[data-season="autumn"] {
+  --bg: #fbf7f0;
+  --season-hero: linear-gradient(135deg, #faf3e7 0%, #f3e3ce 55%, #e4cda8 100%);
+  --season-accent: #c96f4a;
+}
+body[data-season="winter"] {
+  --bg: #f4f6fa;
+  --season-hero: linear-gradient(135deg, #e8eef6 0%, #d3dfee 55%, #b9cbe2 100%);
+  --season-accent: #3b6ea5;
+}
+
+.season-art {
+  position: relative;
+}
+.season-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.season-particle {
+  position: absolute;
+  top: -8%;
+  animation: season-fall linear infinite;
+}
+@keyframes season-fall {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--sway, 20px), 260px, 0) rotate(300deg);
+    opacity: 0.2;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .dice-3d {
+    animation: none;
+  }
+  .season-particle {
     animation: none;
   }
 }
