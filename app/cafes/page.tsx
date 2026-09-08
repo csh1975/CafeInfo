@@ -118,9 +118,9 @@ function CafeListInner() {
           onClick={pickRandom}
           disabled={cafes.length === 0}
           title="등록된 카페 중 랜덤으로 골라 검색합니다"
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-coffee-500/20 bg-white px-4 py-2 text-xs font-bold text-coffee-700 transition hover:bg-cream-100 disabled:cursor-not-allowed disabled:opacity-50"
+          className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-coffee-500/20 bg-white px-5 py-2.5 text-sm font-bold text-coffee-700 transition perspective-400 hover:-translate-y-0.5 hover:border-point/50 hover:bg-cream-100 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none"
         >
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="dice-3d text-point group-hover:[animation-duration:0.7s]">
             <rect x="1.5" y="1.5" width="13" height="13" rx="3" stroke="currentColor" strokeWidth="1.6" />
             <circle cx="5.5" cy="5.5" r="1.3" fill="currentColor" />
             <circle cx="10.5" cy="5.5" r="1.3" fill="currentColor" />
