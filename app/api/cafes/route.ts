@@ -12,22 +12,25 @@ function toListItem(cafe: {
   imageType: string | null;
   createdAt: Date;
   updatedAt: Date;
+  _count?: { comments: number };
 }) {
+  const { _count, ...rest } = cafe;
   return {
-    ...cafe,
+    ...rest,
     hasImage: cafe.imageType != null,
+    reviewCount: _count?.comments ?? 0,
     createdAt: cafe.createdAt.toISOString(),
     updatedAt: cafe.updatedAt.toISOString(),
   };
 }
 
-// GET /api/cafes?q=&sort=rating|latest — 이미지 바이너리 제외
+// GET /api/cafes?q=&sort=rating|latest|distance|reviews — 이미지 바이너리 제외
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const q = (searchParams.get("q") ?? "").trim();
     const rawSort = searchParams.get("sort");
-    const sort = rawSort === "latest" || rawSort === "distance" ? rawSort : "rating";
+    const sort = rawSort === "latest" || rawSort === "distance" || rawSort === "reviews" ? rawSort : "rating";
 
     const cafes = await prisma.cafe.findMany({
       where: q
@@ -38,7 +41,9 @@ export async function GET(req: NextRequest) {
           ? { createdAt: "desc" }
           : sort === "distance"
             ? [{ travelTime: "asc" }, { createdAt: "desc" }]
-            : [{ rating: "desc" }, { createdAt: "desc" }],
+            : sort === "reviews"
+              ? [{ comments: { _count: "desc" } }, { createdAt: "desc" }]
+              : [{ rating: "desc" }, { createdAt: "desc" }],
       select: {
         id: true,
         name: true,
@@ -49,6 +54,7 @@ export async function GET(req: NextRequest) {
         imageType: true,
         createdAt: true,
         updatedAt: true,
+        _count: { select: { comments: true } },
       },
     });
 

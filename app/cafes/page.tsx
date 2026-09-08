@@ -13,6 +13,7 @@ type Cafe = {
   rating: number;
   description: string | null;
   hasImage: boolean;
+  reviewCount: number;
   createdAt: string;
   updatedAt: string;
 };
@@ -32,7 +33,7 @@ function CafeListInner() {
   const [cafes, setCafes] = useState<Cafe[]>([]);
   const [q, setQ] = useState("");
   const [debouncedQ, setDebouncedQ] = useState("");
-  const [sort, setSort] = useState<"rating" | "latest" | "distance">("rating");
+  const [sort, setSort] = useState<"rating" | "latest" | "distance" | "reviews">("rating");
   const [view, setView] = useState<"gallery" | "list">("gallery");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -143,8 +144,9 @@ function CafeListInner() {
           </svg>
           오늘 어디갈까?(랜덤)
         </button>
-        <select value={sort} onChange={(e) => setSort(e.target.value as "rating" | "latest" | "distance")} className="input w-auto" aria-label="정렬">
+        <select value={sort} onChange={(e) => setSort(e.target.value as "rating" | "latest" | "distance" | "reviews")} className="input w-auto" aria-label="정렬">
           <option value="rating">추천도 높은 순</option>
+          <option value="reviews">리뷰 많은 순</option>
           <option value="distance">이동거리 단거리순</option>
           <option value="latest">최신 등록 순</option>
         </select>
@@ -204,7 +206,10 @@ function CafeListInner() {
                   <div className="p-5">
                     <div className="flex items-start justify-between gap-2">
                       <h2 className="font-serif text-lg font-bold text-coffee-900 group-hover:underline">{c.name}</h2>
-                      <Stars value={c.rating} size="sm" />
+                      <div className="flex shrink-0 flex-col items-end">
+                        <Stars value={c.rating} size="sm" />
+                        <span className="mt-1 text-xs font-bold text-coffee-700">리뷰({c.reviewCount}개)</span>
+                      </div>
                     </div>
                     <p className="mt-1 truncate text-sm text-stone-500">{c.address}</p>
                     <p className="mt-2 text-xs font-semibold text-point">🚗 차로 {c.travelTime}분</p>
@@ -240,7 +245,7 @@ function CafeListInner() {
                             {c.description?.trim() ? c.description : "-"}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-center"><Stars value={c.rating} size="sm" /></td>
+                        <td className="px-4 py-3 text-center"><div className="flex flex-col items-center gap-0.5"><Stars value={c.rating} size="sm" /><span className="text-xs font-bold text-coffee-700">리뷰({c.reviewCount}개)</span></div></td>
                       </tr>
                     ))}
                   </tbody>
