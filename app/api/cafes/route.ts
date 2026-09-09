@@ -24,7 +24,7 @@ function toListItem(cafe: {
   };
 }
 
-// GET /api/cafes?q=&sort=rating|latest|distance|reviews — 이미지 바이너리 제외
+// GET /api/cafes?q=&sort=rating|latest|distance|reviews&page=&pageSize= — 이미지 바이너리 제외
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -32,33 +32,57 @@ export async function GET(req: NextRequest) {
     const rawSort = searchParams.get("sort");
     const sort = rawSort === "latest" || rawSort === "distance" || rawSort === "reviews" ? rawSort : "rating";
 
-    const cafes = await prisma.cafe.findMany({
-      where: q
-        ? { OR: [{ name: { contains: q } }, { address: { contains: q } }] }
-        : undefined,
-      orderBy:
-        sort === "latest"
-          ? { createdAt: "desc" }
-          : sort === "distance"
-            ? [{ travelTime: "asc" }, { createdAt: "desc" }]
-            : sort === "reviews"
-              ? [{ comments: { _count: "desc" } }, { createdAt: "desc" }]
-              : [{ rating: "desc" }, { createdAt: "desc" }],
-      select: {
-        id: true,
-        name: true,
-        address: true,
-        travelTime: true,
-        rating: true,
-        description: true,
-        imageType: true,
-        createdAt: true,
-        updatedAt: true,
-        _count: { select: { comments: true } },
-      },
-    });
+    const parsedPage = Number.parseInt(searchParams.get("page") ?? "1", 10);
+    const parsedPageSize = Number.parseInt(searchParams.get("pageSize") ?? "9", 10);
+    const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+    const pageSize =
+      Number.isFinite(parsedPageSize) && parsedPageSize > 0
+        ? Math.min(parsedPageSize, 100)
+        : 9;
 
-    return NextResponse.json({ cafes: cafes.map(toListItem) });
+    const where = q
+      ? { OR: [{ name: { contains: q } }, { address: { contains: q } }] }
+      : undefined;
+    const orderBy =
+      sort === "latest"
+        ? { createdAt: "desc" as const }
+        : sort === "distance"
+          ? [{ travelTime: "asc" as const }, { createdAt: "desc" as const }]
+          : sort === "reviews"
+            ? [{ comments: { _count: "desc" as const } }, { createdAt: "desc" as const }]
+            : [{ rating: "desc" as const }, { createdAt: "desc" as const }];
+
+    const [total, cafes] = await prisma.$transaction([
+      prisma.cafe.count({ where }),
+      prisma.cafe.findMany({
+        where,
+        orderBy,
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        select: {
+          id: true,
+          name: true,
+          address: true,
+          travelTime: true,
+          rating: true,
+          description: true,
+          imageType: true,
+          createdAt: true,
+          updatedAt: true,
+          _count: { select: { comments: true } },
+        },
+      }),
+    ]);
+
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+    return NextResponse.json({
+      cafes: cafes.map(toListItem),
+      total,
+      page,
+      pageSize,
+      totalPages,
+    });
   } catch (e) {
     console.error("GET /api/cafes failed:", e);
     return NextResponse.json({ error: "카페 목록을 불러오지 못했습니다." }, { status: 500 });
