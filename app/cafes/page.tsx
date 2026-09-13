@@ -255,15 +255,15 @@ function CafeListInner() {
                   <div className="p-5">
                     <div className="flex items-start justify-between gap-2">
                       <h2 className="font-serif text-lg font-bold text-coffee-900 group-hover:underline">{c.name}</h2>
+                      <div className="mx-auto shrink-0 pt-0.5">
+                        <LikeButton cafeId={c.id} initialCount={c.likeCount} size="sm" />
+                      </div>
                       <div className="flex shrink-0 flex-col items-end">
                         <Stars value={c.rating} size="sm" />
                         <span className="mt-1 text-xs font-bold text-coffee-700">리뷰({c.reviewCount}개)</span>
                       </div>
                     </div>
                     <p className="mt-1 truncate text-sm text-stone-500">{c.address}</p>
-                    <div className="mt-2">
-                      <LikeButton cafeId={c.id} initialCount={c.likeCount} size="sm" />
-                    </div>
                     <p className="mt-2 text-xs font-semibold text-point">🚗 차로 {c.travelTime}분</p>
                   </div>
                 </Link>
@@ -277,6 +277,7 @@ function CafeListInner() {
                     <tr className="border-b border-coffee-500/10 bg-cream-50 text-xs text-coffee-700">
                       <th scope="col" className="w-12 px-4 py-3 text-center font-bold">순번</th>
                       <th scope="col" className="w-36 px-4 py-3 text-left font-bold">카페명</th>
+                      <th scope="col" className="w-24 px-4 py-3 text-center font-bold">공감</th>
                       <th scope="col" className="w-28 px-4 py-3 text-center font-bold">소요시간</th>
                       <th scope="col" className="px-4 py-3 text-left font-bold">추천 이유</th>
                       <th scope="col" className="w-32 px-4 py-3 text-center font-bold">별점</th>
@@ -291,13 +292,14 @@ function CafeListInner() {
                             {c.name}
                           </Link>
                         </td>
+                        <td className="px-4 py-3 text-center"><LikeButton cafeId={c.id} initialCount={c.likeCount} size="sm" /></td>
                         <td className="whitespace-nowrap px-4 py-3 text-center font-semibold text-point">🚗 {c.travelTime}분</td>
                         <td className="max-w-xs px-4 py-3">
                           <span className="block truncate text-sm text-stone-500" title={c.description ?? ""}>
                             {c.description?.trim() ? c.description : "-"}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-center"><div className="flex flex-col items-center gap-1.5"><Stars value={c.rating} size="sm" /><LikeButton cafeId={c.id} initialCount={c.likeCount} size="sm" /><span className="text-xs font-bold text-coffee-700">리뷰({c.reviewCount}개)</span></div></td>
+                        <td className="px-4 py-3 text-center"><div className="flex flex-col items-center gap-0.5"><Stars value={c.rating} size="sm" /><span className="text-xs font-bold text-coffee-700">리뷰({c.reviewCount}개)</span></div></td>
                       </tr>
                     ))}
                   </tbody>
