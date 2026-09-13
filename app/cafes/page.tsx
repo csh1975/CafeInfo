@@ -51,7 +51,7 @@ function CafeListInner() {
   const [cafes, setCafes] = useState<Cafe[]>([]);
   const [q, setQ] = useState("");
   const [debouncedQ, setDebouncedQ] = useState("");
-  const [sort, setSort] = useState<"rating" | "latest" | "distance" | "reviews">("rating");
+  const [sort, setSort] = useState<"rating" | "latest" | "distance" | "reviews" | "likes">("rating");
   const [view, setView] = useState<"gallery" | "list">("gallery");
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -193,8 +193,9 @@ function CafeListInner() {
           </svg>
           오늘 어디갈까?(랜덤)
         </button>
-        <select value={sort} onChange={(e) => setSort(e.target.value as "rating" | "latest" | "distance" | "reviews")} className="input w-auto" aria-label="정렬">
+        <select value={sort} onChange={(e) => setSort(e.target.value as "rating" | "latest" | "distance" | "reviews" | "likes")} className="input w-auto" aria-label="정렬">
           <option value="rating">추천도 높은 순</option>
+          <option value="likes">공감 많은 순</option>
           <option value="reviews">리뷰 많은 순</option>
           <option value="distance">이동거리 단거리순</option>
           <option value="latest">최신 등록 순</option>
@@ -277,7 +278,6 @@ function CafeListInner() {
                     <tr className="border-b border-coffee-500/10 bg-cream-50 text-xs text-coffee-700">
                       <th scope="col" className="w-12 px-4 py-3 text-center font-bold">순번</th>
                       <th scope="col" className="w-36 px-4 py-3 text-left font-bold">카페명</th>
-                      <th scope="col" className="w-24 px-4 py-3 text-center font-bold">공감</th>
                       <th scope="col" className="w-28 px-4 py-3 text-center font-bold">소요시간</th>
                       <th scope="col" className="px-4 py-3 text-left font-bold">추천 이유</th>
                       <th scope="col" className="w-32 px-4 py-3 text-center font-bold">별점</th>
@@ -292,14 +292,13 @@ function CafeListInner() {
                             {c.name}
                           </Link>
                         </td>
-                        <td className="px-4 py-3 text-center"><LikeButton cafeId={c.id} initialCount={c.likeCount} size="sm" /></td>
                         <td className="whitespace-nowrap px-4 py-3 text-center font-semibold text-point">🚗 {c.travelTime}분</td>
                         <td className="max-w-xs px-4 py-3">
                           <span className="block truncate text-sm text-stone-500" title={c.description ?? ""}>
                             {c.description?.trim() ? c.description : "-"}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-center"><div className="flex flex-col items-center gap-0.5"><Stars value={c.rating} size="sm" /><span className="text-xs font-bold text-coffee-700">리뷰({c.reviewCount}개)</span></div></td>
+                        <td className="px-4 py-3 text-center"><div className="flex flex-col items-center gap-1.5"><Stars value={c.rating} size="sm" /><LikeButton cafeId={c.id} initialCount={c.likeCount} size="sm" /><span className="text-xs font-bold text-coffee-700">리뷰({c.reviewCount}개)</span></div></td>
                       </tr>
                     ))}
                   </tbody>

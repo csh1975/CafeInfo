@@ -25,13 +25,13 @@ function toListItem(cafe: {
   };
 }
 
-// GET /api/cafes?q=&sort=rating|latest|distance|reviews&page=&pageSize= — 이미지 바이너리 제외
+// GET /api/cafes?q=&sort=rating|likes|latest|distance|reviews&page=&pageSize= — 이미지 바이너리 제외
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const q = (searchParams.get("q") ?? "").trim();
     const rawSort = searchParams.get("sort");
-    const sort = rawSort === "latest" || rawSort === "distance" || rawSort === "reviews" ? rawSort : "rating";
+    const sort = rawSort === "likes" || rawSort === "latest" || rawSort === "distance" || rawSort === "reviews" ? rawSort : "rating";
 
     const parsedPage = Number.parseInt(searchParams.get("page") ?? "1", 10);
     const parsedPageSize = Number.parseInt(searchParams.get("pageSize") ?? "9", 10);
@@ -45,13 +45,15 @@ export async function GET(req: NextRequest) {
       ? { OR: [{ name: { contains: q } }, { address: { contains: q } }] }
       : undefined;
     const orderBy =
-      sort === "latest"
-        ? { createdAt: "desc" as const }
-        : sort === "distance"
-          ? [{ travelTime: "asc" as const }, { createdAt: "desc" as const }]
-          : sort === "reviews"
-            ? [{ comments: { _count: "desc" as const } }, { createdAt: "desc" as const }]
-            : [{ rating: "desc" as const }, { createdAt: "desc" as const }];
+      sort === "likes"
+        ? [{ likeCount: "desc" as const }, { createdAt: "desc" as const }]
+        : sort === "latest"
+          ? { createdAt: "desc" as const }
+          : sort === "distance"
+            ? [{ travelTime: "asc" as const }, { createdAt: "desc" as const }]
+            : sort === "reviews"
+              ? [{ comments: { _count: "desc" as const } }, { createdAt: "desc" as const }]
+              : [{ rating: "desc" as const }, { createdAt: "desc" as const }];
 
     const [total, cafes] = await prisma.$transaction([
       prisma.cafe.count({ where }),
