@@ -256,12 +256,14 @@ function CafeListInner() {
                   <div className="p-5">
                     <div className="flex items-start justify-between gap-2">
                       <h2 className="font-serif text-lg font-bold text-coffee-900 group-hover:underline">{c.name}</h2>
-                      <div className="mx-auto shrink-0 pt-0.5">
-                        <LikeButton cafeId={c.id} initialCount={c.likeCount} size="sm" />
-                      </div>
-                      <div className="flex shrink-0 flex-col items-end">
-                        <Stars value={c.rating} size="sm" />
-                        <span className="mt-1 text-xs font-bold text-coffee-700">리뷰({c.reviewCount}개)</span>
+                      <div className="flex shrink-0 items-start gap-[1em]">
+                        <div className="pt-0.5">
+                          <LikeButton cafeId={c.id} initialCount={c.likeCount} size="sm" />
+                        </div>
+                        <div className="flex flex-col items-end">
+                          <Stars value={c.rating} size="sm" />
+                          <span className="mt-1 text-xs font-bold text-coffee-700">리뷰({c.reviewCount}개)</span>
+                        </div>
                       </div>
                     </div>
                     <p className="mt-1 truncate text-sm text-stone-500">{c.address}</p>
