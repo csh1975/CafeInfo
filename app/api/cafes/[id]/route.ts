@@ -10,6 +10,7 @@ function toItem(cafe: {
   address: string;
   travelTime: number;
   rating: number;
+  likeCount: number;
   description: string | null;
   imageType: string | null;
   createdAt: Date;
@@ -28,7 +29,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
   try {
     const cafe = await prisma.cafe.findUnique({
       where: { id: params.id },
-      select: { id: true, name: true, address: true, travelTime: true, rating: true, description: true, imageType: true, createdAt: true, updatedAt: true },
+      select: { id: true, name: true, address: true, travelTime: true, rating: true, likeCount: true, description: true, imageType: true, createdAt: true, updatedAt: true },
     });
     if (!cafe) return NextResponse.json({ error: "카페를 찾을 수 없습니다." }, { status: 404 });
     return NextResponse.json({ cafe: toItem(cafe) });
@@ -89,7 +90,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
     const updated = await prisma.cafe.update({
       where: { id: params.id },
       data: data as never,
-      select: { id: true, name: true, address: true, travelTime: true, rating: true, description: true, imageType: true, createdAt: true, updatedAt: true },
+      select: { id: true, name: true, address: true, travelTime: true, rating: true, likeCount: true, description: true, imageType: true, createdAt: true, updatedAt: true },
     });
     return NextResponse.json({ cafe: toItem(updated) });
   } catch (e) {

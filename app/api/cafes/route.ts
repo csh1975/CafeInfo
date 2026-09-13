@@ -8,6 +8,7 @@ function toListItem(cafe: {
   address: string;
   travelTime: number;
   rating: number;
+  likeCount: number;
   description: string | null;
   imageType: string | null;
   createdAt: Date;
@@ -65,6 +66,7 @@ export async function GET(req: NextRequest) {
           address: true,
           travelTime: true,
           rating: true,
+          likeCount: true,
           description: true,
           imageType: true,
           createdAt: true,
@@ -133,7 +135,7 @@ export async function POST(req: NextRequest) {
 
     const created = await prisma.cafe.create({
       data: { ...parsed.data, image, imageType },
-      select: { id: true, name: true, address: true, travelTime: true, rating: true, description: true, imageType: true, createdAt: true, updatedAt: true },
+      select: { id: true, name: true, address: true, travelTime: true, rating: true, likeCount: true, description: true, imageType: true, createdAt: true, updatedAt: true },
     });
 
     return NextResponse.json({ cafe: toListItem(created) }, { status: 201 });
