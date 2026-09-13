@@ -3,12 +3,13 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Stars, CafePlaceholder } from "@/components/ui/bits";
 import { DeleteButton } from "@/components/cafe/DeleteButton";
+import LikeButton from "@/components/cafe/LikeButton";
 import Comments from "@/components/cafe/Comments";
 
 export default async function CafeDetailPage({ params }: { params: { id: string } }) {
   const cafe = await prisma.cafe.findUnique({
     where: { id: params.id },
-    select: { id: true, name: true, address: true, travelTime: true, rating: true, description: true, imageType: true, createdAt: true, updatedAt: true },
+    select: { id: true, name: true, address: true, travelTime: true, rating: true, likeCount: true, description: true, imageType: true, createdAt: true, updatedAt: true },
   });
   if (!cafe) notFound();
 
@@ -37,6 +38,9 @@ export default async function CafeDetailPage({ params }: { params: { id: string 
           {cafe.description && (
             <div className="mt-5 rounded-xl bg-cream-50 p-4 text-sm leading-relaxed text-stone-700">{cafe.description}</div>
           )}
+          <div className="mt-5">
+            <LikeButton cafeId={cafe.id} initialCount={cafe.likeCount} size="lg" />
+          </div>
           <div className="mt-6 flex gap-2 border-t border-coffee-500/10 pt-5">
             <Link href={`/cafes/${cafe.id}/edit`} className="btn-primary !px-5 !py-2.5 text-xs">수정</Link>
             <DeleteButton id={cafe.id} name={cafe.name} />

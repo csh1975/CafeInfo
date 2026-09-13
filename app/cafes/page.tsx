@@ -4,6 +4,7 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Stars, CafePlaceholder, Toast } from "@/components/ui/bits";
+import LikeButton from "@/components/cafe/LikeButton";
 
 type Cafe = {
   id: string;
@@ -11,6 +12,7 @@ type Cafe = {
   address: string;
   travelTime: number;
   rating: number;
+  likeCount: number;
   description: string | null;
   hasImage: boolean;
   reviewCount: number;
@@ -259,6 +261,9 @@ function CafeListInner() {
                       </div>
                     </div>
                     <p className="mt-1 truncate text-sm text-stone-500">{c.address}</p>
+                    <div className="mt-2">
+                      <LikeButton cafeId={c.id} initialCount={c.likeCount} size="sm" />
+                    </div>
                     <p className="mt-2 text-xs font-semibold text-point">🚗 차로 {c.travelTime}분</p>
                   </div>
                 </Link>
@@ -292,7 +297,7 @@ function CafeListInner() {
                             {c.description?.trim() ? c.description : "-"}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-center"><div className="flex flex-col items-center gap-0.5"><Stars value={c.rating} size="sm" /><span className="text-xs font-bold text-coffee-700">리뷰({c.reviewCount}개)</span></div></td>
+                        <td className="px-4 py-3 text-center"><div className="flex flex-col items-center gap-1.5"><Stars value={c.rating} size="sm" /><LikeButton cafeId={c.id} initialCount={c.likeCount} size="sm" /><span className="text-xs font-bold text-coffee-700">리뷰({c.reviewCount}개)</span></div></td>
                       </tr>
                     ))}
                   </tbody>
